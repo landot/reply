@@ -36,7 +36,8 @@ var confirm = exports.confirm = function(message, callback) {
 
 
 /**
- * Creates an exportable function that looks through the options for answers to questions
+ * Creates an exportable function that takes in answers to questions
+ * Allows you to grab specific answers to questions and throws errors if the data type of an answer is not correct
  * @param {object} options - question objects with options for answers
  * @param {boolean} callback - if you want callback
  * @return {callback}
@@ -68,9 +69,9 @@ var get = exports.get = function(options, callback) {
   }
 
   /**
-   * 
-   * @param {} key
-   * @param {} partial_answers
+   * Returns the default data type of a specific question 
+   * @param {Object} key - the question object
+   * @param {Object} partial_answers - answer for the specific question
    * @return 
    */
   var get_default = function(key, partial_answers) {
@@ -100,10 +101,10 @@ var get = exports.get = function(options, callback) {
   }
 
   /**
-   * 
-   * @param {} key
-   * @param {} answer
-   * @return 
+   * Makes sure that the answer is a proper answer
+   * @param {Object} key - the question object
+   * @param {} answer - the answer to the question
+   * @return - returns if the answer is a correct type of response
    */
   var validate = function(key, answer) {
 
@@ -151,12 +152,6 @@ var get = exports.get = function(options, callback) {
     if (msg != '') stdout.write("\033[1m" + msg + "\033[0m\n");
   }
 
-  /**
-   * 
-   * @param {} prompt
-   * @param {} callback
-   * @return
-   */
   var wait_for_password = function(prompt, callback) {
 
     var buf = '',
