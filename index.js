@@ -103,7 +103,7 @@ var get = exports.get = function(options, callback) {
   /**
    * Makes sure that the answer is a proper answer
    * @param {Object} key - the question object
-   * @param {} answer - the answer to the question
+   * @param {string} answer - the answer to the question
    * @return - returns if the answer is a correct type of response
    */
   var validate = function(key, answer) {
@@ -151,7 +151,11 @@ var get = exports.get = function(options, callback) {
 
     if (msg != '') stdout.write("\033[1m" + msg + "\033[0m\n");
   }
-
+  
+  /**
+   * @param {Boolean} prompt - if the prompt should occur
+   * @param {Function} callback - asynchronous vs synchronous callback
+   */
   var wait_for_password = function(prompt, callback) {
 
     var buf = '',
@@ -185,11 +189,11 @@ var get = exports.get = function(options, callback) {
   }
 
   /**
-   * 
-   * @param {} index
-   * @param {} curr_key
-   * @param {} fallback
-   * @param {} reply
+   * Recursively prompts the user the next question object if the previous answer was in a correct form
+   * @param {int} index - The index of the current question in the object
+   * @param {Object} curr_key - the options object
+   * @param {Object} fallback - the default data type
+   * @param {string} reply - The answer inputted by the user
    */
   var check_reply = function(index, curr_key, fallback, reply) {
     var answer = guess_type(reply);
@@ -202,8 +206,8 @@ var get = exports.get = function(options, callback) {
   }
 
   /**
-   * 
-   * @param {} conds
+   * Returns a boolean on if the condition is within the key object
+   * @param {Object} conds
    * @return {boolean}
    */
   var dependencies_met = function(conds) {
@@ -226,10 +230,10 @@ var get = exports.get = function(options, callback) {
 
 
   /**
-   * 
-   * @param {} index
-   * @param {} prev_key
-   * @param {} answer
+   * Adds the answer to the last question and prompts the next question
+   * @param {int} index - the index of the current question
+   * @param {} prev_key - the previous question
+   * @param {} answer - the answer to the current index question
    * 
    */
   var next_question = function(index, prev_key, answer) {
