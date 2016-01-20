@@ -1,11 +1,22 @@
 var rl, readline = require('readline');
 
+/**
+ * Returns an iterface to process inputs and outputs
+ * @param {string} stdin - the input
+ * @param {string} stdout - the output
+ * @returns {readline.createInterface}
+ */
 var get_interface = function(stdin, stdout) {
   if (!rl) rl = readline.createInterface(stdin, stdout);
   else stdin.resume(); // interface exists
   return rl;
 }
 
+/**
+ * Creates an exportable function that asks a question and saves the response
+ * @param {string} message - This is where you put the question
+ * @param {boolean} callback - asynchronous vs synchronous callback
+ */
 var confirm = exports.confirm = function(message, callback) {
 
   var question = {
@@ -15,7 +26,7 @@ var confirm = exports.confirm = function(message, callback) {
       default: 'yes'
     }
   }
-
+  
   get(question, function(err, answer) {
     if (err) return callback(err);
     callback(null, answer.reply === true || answer.reply == 'yes');
@@ -23,6 +34,13 @@ var confirm = exports.confirm = function(message, callback) {
 
 };
 
+
+/**
+ * Creates an exportable function that looks through the options for answers to questions
+ * @param {object} options - question objects with options for answers
+ * @param {boolean} callback - if you want callback
+ * @return {callback}
+ */
 var get = exports.get = function(options, callback) {
 
   if (!callback) return; // no point in continuing
@@ -34,12 +52,14 @@ var get = exports.get = function(options, callback) {
       stdin = process.stdin,
       stdout = process.stdout,
       fields = Object.keys(options);
-
+  
+  //Closes the interface when done             
   var done = function() {
     close_prompt();
     callback(null, answers);
   }
-
+  
+  //Closes the prompt if it has not been closed
   var close_prompt = function() {
     stdin.pause();
     if (!rl) return;
@@ -47,13 +67,24 @@ var get = exports.get = function(options, callback) {
     rl = null;
   }
 
+  /**
+   * 
+   * @param {} key
+   * @param {} partial_answers
+   * @return 
+   */
   var get_default = function(key, partial_answers) {
     if (typeof options[key] == 'object')
       return typeof options[key].default == 'function' ? options[key].default(partial_answers) : options[key].default;
     else
       return options[key];
   }
-
+  
+  /**
+   * Returns a boolean for the answers of yes/no true/false questions
+   * @param {string} reply - The inputted response
+   * @return {boolean} reply - Whether it is true or false
+   */
   var guess_type = function(reply) {
 
     if (reply.trim() == '')
@@ -68,6 +99,12 @@ var get = exports.get = function(options, callback) {
     return reply;
   }
 
+  /**
+   * 
+   * @param {} key
+   * @param {} answer
+   * @return 
+   */
   var validate = function(key, answer) {
 
     if (typeof answer == 'undefined')
@@ -85,6 +122,10 @@ var get = exports.get = function(options, callback) {
 
   }
 
+  /**
+   * Prints to console any incorrect answers with a list of correct answers
+   * @param {Object} key - The object of the question being asked
+   */
   var show_error = function(key) {
     var str = options[key].error ? options[key].error : 'Invalid value.';
 
@@ -94,6 +135,10 @@ var get = exports.get = function(options, callback) {
     stdout.write("\033[31m" + str + "\033[0m" + "\n");
   }
 
+  /**
+   * Creates a message variable that shows the question and options for answers
+   * @param {Object} key - The object that holds the question details
+   */
   var show_message = function(key) {
     var msg = '';
 
@@ -106,7 +151,12 @@ var get = exports.get = function(options, callback) {
     if (msg != '') stdout.write("\033[1m" + msg + "\033[0m\n");
   }
 
-  // taken from commander lib
+  /**
+   * 
+   * @param {} prompt
+   * @param {} callback
+   * @return
+   */
   var wait_for_password = function(prompt, callback) {
 
     var buf = '',
@@ -139,6 +189,13 @@ var get = exports.get = function(options, callback) {
     stdin.on('keypress', keypress_callback);
   }
 
+  /**
+   * 
+   * @param {} index
+   * @param {} curr_key
+   * @param {} fallback
+   * @param {} reply
+   */
   var check_reply = function(index, curr_key, fallback, reply) {
     var answer = guess_type(reply);
     var return_answer = (typeof answer != 'undefined') ? answer : fallback;
@@ -149,6 +206,11 @@ var get = exports.get = function(options, callback) {
       show_error(curr_key) || next_question(index); // repeats current
   }
 
+  /**
+   * 
+   * @param {} conds
+   * @return {boolean}
+   */
   var dependencies_met = function(conds) {
     for (var key in conds) {
       var cond = conds[key];
@@ -167,6 +229,14 @@ var get = exports.get = function(options, callback) {
     return true;
   }
 
+
+  /**
+   * 
+   * @param {} index
+   * @param {} prev_key
+   * @param {} answer
+   * 
+   */
   var next_question = function(index, prev_key, answer) {
     if (prev_key) answers[prev_key] = answer;
 
@@ -194,7 +264,7 @@ var get = exports.get = function(options, callback) {
 
       // stdin.setRawMode(true);
       stdout.write(prompt);
-
+      
       wait_for_password(prompt, function(reply) {
         stdin._events.keypress = listener; // reassign
         check_reply(index, curr_key, fallback, reply)
