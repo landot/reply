@@ -1,3 +1,4 @@
+
 var rl, readline = require('readline');
 
 /**
@@ -40,7 +41,7 @@ var confirm = exports.confirm = function(message, callback) {
  * Allows you to grab specific answers to questions and throws errors if the data type of an answer is not correct
  * @param {object} options - question objects with options for answers
  * @param {boolean} callback - if you want callback
- * @return {callback}
+ * @returns {callback}
  */
 var get = exports.get = function(options, callback) {
 
@@ -72,7 +73,7 @@ var get = exports.get = function(options, callback) {
    * Returns the default data type of a specific question 
    * @param {Object} key - the question object
    * @param {Object} partial_answers - answer for the specific question
-   * @return 
+   * @returns {Object} - the data type 
    */
   var get_default = function(key, partial_answers) {
     if (typeof options[key] == 'object')
@@ -84,7 +85,7 @@ var get = exports.get = function(options, callback) {
   /**
    * Returns a boolean for the answers of yes/no true/false questions
    * @param {string} reply - The inputted response
-   * @return {boolean} reply - Whether it is true or false
+   * @returns {boolean} reply - Whether it is true or false
    */
   var guess_type = function(reply) {
 
@@ -104,7 +105,7 @@ var get = exports.get = function(options, callback) {
    * Makes sure that the answer is a proper answer
    * @param {Object} key - the question object
    * @param {string} answer - the answer to the question
-   * @return - returns if the answer is a correct type of response
+   * @returns - returns if the answer is a correct type of response
    */
   var validate = function(key, answer) {
 
@@ -133,7 +134,7 @@ var get = exports.get = function(options, callback) {
     if (options[key].options)
         str += ' (options are ' + options[key].options.join(', ') + ')';
 
-    stdout.write("\033[31m" + str + "\033[0m" + "\n");
+    stdout.write(" \x1b[1,32m" + str + "\x1b[1,32m" + "\n");
   }
 
   /**
@@ -149,7 +150,7 @@ var get = exports.get = function(options, callback) {
     if (options[key].options)
       msg += '(options are ' + options[key].options.join(', ') + ')';
 
-    if (msg != '') stdout.write("\033[1m" + msg + "\033[0m\n");
+    if (msg != '') stdout.write("\x1b[1,32m" + msg + "\x1b[1,32m");
   }
   
   /**
@@ -177,7 +178,7 @@ var get = exports.get = function(options, callback) {
         buf = buf.substr(0, buf.length-1);
         var masked = '';
         for (i = 0; i < buf.length; i++) { masked += mask; }
-        stdout.write('\r\033[2K' + prompt + masked);
+        stdout.write('\x1b[1,32m' + prompt + masked);
       } else {
         stdout.write(mask);
         buf += c;
@@ -208,7 +209,7 @@ var get = exports.get = function(options, callback) {
   /**
    * Returns a boolean on if the condition is within the key object
    * @param {Object} conds
-   * @return {boolean}
+   * @returns {boolean}
    */
   var dependencies_met = function(conds) {
     for (var key in conds) {
@@ -232,8 +233,8 @@ var get = exports.get = function(options, callback) {
   /**
    * Adds the answer to the last question and prompts the next question
    * @param {int} index - the index of the current question
-   * @param {} prev_key - the previous question
-   * @param {} answer - the answer to the current index question
+   * @param {Object} prev_key - the previous question
+   * @param {Object} answer - the answer to the current index question
    * 
    */
   var next_question = function(index, prev_key, answer) {
