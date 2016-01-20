@@ -1,3 +1,6 @@
+//Example option JSON file
+//Can be referenced by other js files
+
 {
   "name": {
   	"message": "Please type in your name."

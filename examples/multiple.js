@@ -1,3 +1,4 @@
+//first use require to get access to the methods
 var reply = require('./../');
 
 var bye = function(){
@@ -12,12 +13,14 @@ var get_input = function(){
 	    console.log("Then let's get on with it!");
 	  else
 	    return console.log("Boo. Maybe next time.");
-
+        
+        //password type censors the input
 		reply.get({ email: 'email@mailbox.com', password: { type: 'password'} }, function(err, result){
 
 			if (err) return bye();
 			console.log(result);
-
+            
+            //ask the user if the input was correct
 			reply.confirm('Is this information OK?', function(err, yes){
 
 					if (err || !yes)
